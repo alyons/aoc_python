@@ -2,9 +2,13 @@
 
 Language: Python (3.10)
 
+`source ./bin/activate` -> Enter virtual environment
+`pip3 install -e . ` - With configuration will set up library in editable mode  
+`pip3 install -r ./requirements_dev.txt` - Install Dev Dependancies  
+`mypy src` to validate code writing  
+`flake8 src` to lint  
+`pytest` to run tests  
+
 ### To Do:
 
-- [ ] Make it so I am doing an import of the package rather than directly calling files
-  - Switch back to old form of import and virtual env?
-  - Actually figure out what is going on with pipenv??
-  - Re-install Python?
+- [X] Make it so I am doing an import of the package rather than directly calling files
