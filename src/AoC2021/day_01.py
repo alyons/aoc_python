@@ -1,6 +1,5 @@
-from AoC2021.day_01 import increase_count, sum_increase_count
-
 from typing import List
+
 
 def increase_count(array: List[int]) -> int:
     count = 0
@@ -15,7 +14,6 @@ def increase_count(array: List[int]) -> int:
 
 
 def sum_increase_count(array: List[int]) -> int:
-    count = 0
     sums = []
 
     for i in range(len(array) - 2):
@@ -29,25 +27,11 @@ def sum_increase_count(array: List[int]) -> int:
     return increase_count(sums)
 
 
-def main():
-    print('Welcome to Day 01 of Advent of Code 2021')
-
-    test_input = [199, 200, 208, 210, 200, 207, 240, 269, 260, 263]
-
+def parse_day_01(file: str) -> List[int]:
     data = []
-    with open('./data/day_01.txt') as f:
+
+    with open(file) as f:
         for line in f:
             data.append(int(line))
 
-    count = increase_count(data)
-
-    print('Increase Count: %d' % count)
-
-    sum_count = sum_increase_count(data)
-
-    print('Sum Increase Count: %d' % sum_count)
-
-
-
-if __name__ == '__main__':
-    main()
+    return data
