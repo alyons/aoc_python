@@ -1,11 +1,7 @@
-from AoC2021.day_01 import parse_day_01, increase_count, sum_increase_count
-from numpy import array_equal
+from AoC2021.day_01 import increase_count, sum_increase_count
+from AoC2021.util import parse_int_file
 
-test_input = [199, 200, 208, 210, 200, 207, 240, 269, 260, 263]
-
-def test_parse_day_01():
-    actual = parse_day_01('./tests/data/day_01.txt')
-    assert array_equal(test_input, actual)
+test_input = parse_int_file('./tests/data/day_01.txt')
 
 
 def test_increase_count():

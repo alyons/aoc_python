@@ -25,13 +25,3 @@ def sum_increase_count(array: List[int]) -> int:
         sums[i] += array[third]
 
     return increase_count(sums)
-
-
-def parse_day_01(file: str) -> List[int]:
-    data = []
-
-    with open(file) as f:
-        for line in f:
-            data.append(int(line))
-
-    return data
