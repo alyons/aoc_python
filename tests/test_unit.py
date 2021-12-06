@@ -1,5 +1,5 @@
-from AoC2021.util import parse_file, parse_int_file, parse_bingo_file
-from numpy import array_equal
+from AoC2021.util import parse_file, parse_int_count, parse_int_file, parse_bingo_file
+from numpy import array_equal, exp
 
 
 def test_parse_file():
@@ -20,3 +20,14 @@ def test_parse_bingo_file():
     actual_numbers, actual_boards = parse_bingo_file('./tests/data/day_04.txt')
     assert array_equal(expected_numbers, actual_numbers)
     assert array_equal(expected_boards, actual_boards)
+
+
+def test_parse_int_count():
+    expected = {
+        1: 1,
+        2: 1,
+        3: 2,
+        4: 1
+    }
+    actual = parse_int_count('./tests/data/day_06.txt')
+    assert expected == actual

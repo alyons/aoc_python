@@ -1,6 +1,5 @@
 from typing import List, Tuple
-from numpy import equal, ndarray
-import re
+from numpy import ndarray
 
 
 def parse_file(file: str) -> List[str]:
@@ -39,3 +38,18 @@ def parse_bingo_file(file: str) -> Tuple[List[int], List[ndarray]]:
                     temp_board.clear()
 
     return (numbers, boards)
+
+
+def parse_int_count(file: str) -> dict:
+    values = {}
+
+    with open(file) as f:
+        for line in f:
+            array = [int(item) for item in line.split(',')]
+            for item in array:
+                if item in values:
+                    values[item] += 1
+                else:
+                    values[item] = 1
+
+    return values
