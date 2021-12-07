@@ -1,6 +1,7 @@
 from AoC2021.util import parse_int_count
 from AoC2021.day_06 import lantern_fish_sim
 
+
 def main():
     print('Welcome to Day 06 of Advent of Code 2021')
 
