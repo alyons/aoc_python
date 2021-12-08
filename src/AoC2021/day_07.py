@@ -11,6 +11,14 @@ def align_crabs(crabs: dict) -> int:
     return fuel
 
 
+def _position_cost(crabs: dict, position: int) -> int:
+    fuel = 0
+    for key in crabs:
+        fuel += abs(position - key) * crabs[key]
+    
+    return fuel
+
+
 def align_crabs_ex(crabs: dict) -> int:
     fuel = sys.maxsize
     travel_cost = {}
@@ -28,12 +36,4 @@ def align_crabs_ex(crabs: dict) -> int:
         
         fuel = min(_f, fuel)
 
-    return fuel
-
-
-def _position_cost(crabs: dict, position: int) -> int:
-    fuel = 0
-    for key in crabs:
-        fuel += abs(position - key) * crabs[key]
-    
     return fuel

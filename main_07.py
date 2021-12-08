@@ -3,7 +3,7 @@ from AoC2021.day_07 import align_crabs, align_crabs_ex
 
 
 def main():
-    print('Welcome to Day 06 of Advent of Code 2021')
+    print('Welcome to Day 07 of Advent of Code 2021')
 
     crabs = parse_int_count('./data/day_07.txt')
     fuel = align_crabs(crabs)
