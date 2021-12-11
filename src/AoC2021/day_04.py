@@ -24,9 +24,6 @@ def board_score(numbers: List[int], board: List[List[int]]) -> int:
     flat_board = sum(board, []) # Better to build a lambda to make this usable elsewhere https://stackabuse.com/python-how-to-flatten-list-of-lists/
     index = board_score_index(numbers, board)
 
-    if index >= len(numbers): # No appropriate score found
-        return 0
-
     temp = list(filter(lambda item: numbers.index(item) <= index, flat_board))
     score = sum(flat_board) - sum(temp)
 
@@ -43,9 +40,6 @@ def first_score(numbers: List[int], boards: List[List[List[int]]]) -> int:
             board_index = i
             score_index = temp_index
 
-    if (board_index == -1 or score_index >= len(numbers)): # never found a scoring board
-        return 0
-
     return numbers[score_index] * board_score(numbers, boards[board_index])
 
 def last_score(numbers: List[int], boards: List[List[List[int]]]) -> int:
@@ -57,8 +51,5 @@ def last_score(numbers: List[int], boards: List[List[List[int]]]) -> int:
         if temp_index > score_index:
             board_index = i
             score_index = temp_index
-
-    if (board_index == -1 or score_index >= len(numbers)): # never found a scoring board
-        return 0
 
     return numbers[score_index] * board_score(numbers, boards[board_index])

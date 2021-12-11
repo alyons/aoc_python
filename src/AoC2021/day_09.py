@@ -63,9 +63,7 @@ def calculate_basin_size(point: Tuple, height_map: List[str]) -> int:
         p = test.pop()
         x, y = p
         adjacent = find_adjacent_points(p, xMax, yMax)
-        if (height_map[y][x] == '9'):
-            peaks.append(p)
-        elif not p in basin:
+        if not p in basin:
             basin.append(p)
         
         for a in adjacent:
