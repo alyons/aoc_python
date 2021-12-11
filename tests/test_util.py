@@ -1,4 +1,4 @@
-from AoC2021.util import parse_file, parse_int_count, parse_int_file, parse_bingo_file
+from AoC2021.util import parse_file, parse_int_count, parse_int_file, parse_bingo_file, parse_octopus_grid
 from numpy import array_equal, exp
 
 
@@ -30,4 +30,19 @@ def test_parse_int_count():
         4: 1
     }
     actual = parse_int_count('./tests/data/day_06.txt')
+    assert expected == actual
+
+
+def test_parse_octopus_grid():
+    expected = [5,4,8,3,1,4,3,2,2,3,
+                2,7,4,5,8,5,4,7,1,1,
+                5,2,6,4,5,5,6,1,7,3,
+                6,1,4,1,3,3,6,1,4,6,
+                6,3,5,7,3,8,5,4,7,8,
+                4,1,6,7,5,2,4,6,4,5,
+                2,1,7,6,8,4,1,7,2,1,
+                6,8,8,2,8,8,1,1,3,4,
+                4,8,4,6,8,4,8,5,5,4,
+                5,2,8,3,7,5,1,5,2,6]
+    actual = parse_octopus_grid('./tests/data/day_11.txt')
     assert expected == actual

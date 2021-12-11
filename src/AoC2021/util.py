@@ -53,3 +53,14 @@ def parse_int_count(file: str) -> dict:
                     values[item] = 1
 
     return values
+
+
+def parse_octopus_grid(file: str) -> List[List[int]]:
+    grid = []
+
+    with open(file) as f:
+        for line in f:
+            row = [int(x) for x in line.strip()]
+            if row: grid.append(row)
+    
+    return sum(grid, [])
