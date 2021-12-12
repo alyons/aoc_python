@@ -1,6 +1,7 @@
 from typing import List, Set
 from reprint import output
 from time import clock_gettime_ns, CLOCK_REALTIME
+from functools import cache
 
 def get_other_node(node: str, edge: List[str]) -> str:
     if node == edge[0]:
@@ -97,6 +98,7 @@ def complex_paths(edges: List[List[str]], show_console: bool = False) -> List[st
 def valid_simple_path(path: List[str]) -> bool:
     return path[0] == 'start' and path.count('end') <= 1 and all([path.count(n) == 1 or n.isupper() for n in path])
 
+
 def complete_simple_path(path: List[str]) -> bool:
     return path[0] == 'start' and path[-1] == 'end' and all([path.count(n) == 1 or n.isupper() for n in path])
 
@@ -114,5 +116,34 @@ def simple_paths_recursive(edges: List[List[str]], cave: str = 'start', path: Li
 
         if valid_simple_path(next_path):
             simple_paths_recursive(edges, n, next_path, complete_paths)
+
+    return complete_paths
+
+
+def validate_complex_path(path: List[str], small_caves: Set[str]) -> bool:
+    small_count = [path.count(c) for c in small_caves]
+    
+    return path[0] == 'start' and path.count('start') == 1 and path.count('end') <= 1 and small_count.count(2) <= 1 and not any(c > 2 for c in small_count)
+
+
+def complete_complex_path(path: List[str], small_caves: Set[str]) -> bool:
+    small_count = [path.count(c) for c in small_caves]
+    
+    return path[0] == 'start' and path.count('start') == 1 and path[-1] == 'end' and path.count('end') == 1 and small_count.count(2) <= 1
+
+
+def complex_paths_recursive(edges: List[List[str]], small_caves: Set[str], cave: str = 'start', path: List[str] = [], complete_paths: List[List[str]] = []) -> List[List[str]]:
+    path.append(cave)
+    if cave == 'end' and complete_complex_path(path, small_caves):
+        complete_paths.append(path)
+        return complete_paths
+
+    next_nodes = [get_other_node(cave, edge) for edge in edges if cave in edge]
+
+    for n in next_nodes:
+        next_path = path.copy()
+
+        if validate_complex_path(next_path, small_caves):
+            complex_paths_recursive(edges, small_caves, n, next_path, complete_paths)
 
     return complete_paths
