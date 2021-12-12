@@ -1,4 +1,4 @@
-from AoC2021.util import parse_file, parse_int_count, parse_int_file, parse_bingo_file, parse_octopus_grid
+from AoC2021.util import parse_file, parse_int_count, parse_int_file, parse_bingo_file, parse_octopus_grid, parse_cave_graph
 from numpy import array_equal, exp
 
 
@@ -45,4 +45,10 @@ def test_parse_octopus_grid():
                 4,8,4,6,8,4,8,5,5,4,
                 5,2,8,3,7,5,1,5,2,6]
     actual = parse_octopus_grid('./tests/data/day_11.txt')
+    assert expected == actual
+
+
+def test_parse_cave_graph():
+    expected = [['start', 'A'], ['start', 'b'], ['A', 'c'], ['A', 'b'], ['b', 'd'], ['A', 'end'], ['b', 'end']]
+    actual = parse_cave_graph('./tests/data/day_12.txt')
     assert expected == actual

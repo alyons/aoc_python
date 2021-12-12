@@ -64,3 +64,13 @@ def parse_octopus_grid(file: str) -> List[List[int]]:
             if row: grid.append(row)
     
     return sum(grid, [])
+
+def parse_cave_graph(file: str) -> List[str]:
+    edges = []
+
+    with open(file) as f:
+        for line in f:
+            edge = line.strip().split('-')
+            edges.append(edge)
+
+    return edges
