@@ -16,11 +16,8 @@ def main():
     x_max = max([p[0] for p in points])
     y_max = max([p[1] for p in points])
 
-    display = [] # List of str
+    display = [' ' * (x_max + 1)] * (y_max + 1)
 
-    for y in range(y_max + 1):
-        display.append(' ' * (x_max + 1))
-    
     for p in points:
         display[p[1]] = display[p[1]][:p[0]] + '#' + display[p[1]][(p[0]+1):] 
     
