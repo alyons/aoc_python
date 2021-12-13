@@ -1,5 +1,6 @@
 from typing import List, Tuple
 from numpy import ndarray
+import re
 
 
 def parse_file(file: str) -> List[str]:
@@ -65,6 +66,7 @@ def parse_octopus_grid(file: str) -> List[List[int]]:
     
     return sum(grid, [])
 
+
 def parse_cave_graph(file: str) -> List[str]:
     edges = []
 
@@ -74,3 +76,23 @@ def parse_cave_graph(file: str) -> List[str]:
             edges.append(edge)
 
     return edges
+
+
+def parse_manual(file: str) -> Tuple:
+    points = []
+    folds = []
+
+    fold_ptn = re.compile(r'fold along (?P<axis>[xy])=(?P<number>\d+)')
+
+    with open(file) as f:
+        for line in f:
+            if ',' in line:
+                point = [int(d) for d in line.strip().split(',')]
+                points.append(point)
+            else:
+                m = fold_ptn.match(line.strip())
+                if m:
+                    fold = (m.group(1), int(m.group(2)))
+                    folds.append(fold)
+
+    return (points, folds)

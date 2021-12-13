@@ -1,4 +1,4 @@
-from AoC2021.util import parse_file, parse_int_count, parse_int_file, parse_bingo_file, parse_octopus_grid, parse_cave_graph
+from AoC2021.util import parse_file, parse_int_count, parse_int_file, parse_bingo_file, parse_manual, parse_octopus_grid, parse_cave_graph
 from numpy import array_equal, exp
 
 
@@ -52,3 +52,11 @@ def test_parse_cave_graph():
     expected = [['start', 'A'], ['start', 'b'], ['A', 'c'], ['A', 'b'], ['b', 'd'], ['A', 'end'], ['b', 'end']]
     actual = parse_cave_graph('./tests/data/day_12.txt')
     assert expected == actual
+
+
+def test_parse_manual():
+    expected_p =[[6,10], [0,14], [9,10], [0,3], [10,4], [4,11], [6,0], [6,12], [4,1], [0,13], [10,12], [3,4], [3,0], [8,4], [1,10], [2,14], [8,10], [9,0]]
+    expected_f = [('y', 7), ('x', 5)]
+    points, folds = parse_manual('./tests/data/day_13.txt')
+    assert expected_p == points
+    assert expected_f == folds
