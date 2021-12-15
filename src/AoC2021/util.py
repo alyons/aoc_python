@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import Dict, List, Set, Tuple
 from numpy import ndarray
 import re
 
@@ -96,3 +96,24 @@ def parse_manual(file: str) -> Tuple:
                     folds.append(fold)
 
     return (points, folds)
+
+
+def parse_polymer_formula(file: str) -> Tuple[str, Dict, Dict]:
+    template = ''
+    rules = {}
+    elements = {}
+
+    with open(file) as f:
+        for line in f:
+            if not template and not '->' in line:
+                template = line.strip()
+                for t in template:
+                    elements[t] = 0
+            elif '->' in line:
+                pair = line.strip().split('->')
+                rules[pair[0].strip()] = pair[1].strip()
+                for p in pair:
+                    for i in p.strip():
+                        elements[i] = 0
+
+    return (template, rules, elements)

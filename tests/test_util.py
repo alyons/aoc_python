@@ -1,4 +1,4 @@
-from AoC2021.util import parse_file, parse_int_count, parse_int_file, parse_bingo_file, parse_manual, parse_octopus_grid, parse_cave_graph
+from AoC2021.util import parse_file, parse_int_count, parse_int_file, parse_bingo_file, parse_manual, parse_octopus_grid, parse_cave_graph, parse_polymer_formula
 from numpy import array_equal, exp
 
 
@@ -60,3 +60,13 @@ def test_parse_manual():
     points, folds = parse_manual('./tests/data/day_13.txt')
     assert expected_p == points
     assert expected_f == folds
+
+
+def test_parse_polymer_formula():
+    expected_t = 'NNCB'
+    expected_r = { 'CH': 'B', 'HH': 'N', 'CB': 'H', 'NH': 'C', 'HB': 'C', 'HC': 'B', 'HN': 'C', 'NN': 'C', 'BH': 'H', 'NC': 'B', 'NB': 'B', 'BN': 'B', 'BB': 'N', 'BC': 'B', 'CC': 'N', 'CN': 'C' }
+    expected_e = { 'B': 0, 'C': 0, 'H': 0, 'N': 0 }
+    template, rules, elements = parse_polymer_formula('./tests/data/day_14.txt')
+    assert expected_t == template
+    assert expected_r == rules
+    assert expected_e == elements
