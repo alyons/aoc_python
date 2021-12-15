@@ -1,4 +1,4 @@
-from AoC2021.util import parse_file, parse_int_count, parse_int_file, parse_bingo_file, parse_manual, parse_octopus_grid, parse_cave_graph, parse_polymer_formula
+from AoC2021.util import parse_chiton_cave, parse_file, parse_int_count, parse_int_file, parse_bingo_file, parse_manual, parse_octopus_grid, parse_cave_graph, parse_polymer_formula
 from numpy import array_equal, exp
 
 
@@ -70,3 +70,20 @@ def test_parse_polymer_formula():
     assert expected_t == template
     assert expected_r == rules
     assert expected_e == elements
+
+
+def test_parse_chiton_grid():
+    expected = [1,1,6,3,7,5,1,7,4,2,
+                1,3,8,1,3,7,3,6,7,2,
+                2,1,3,6,5,1,1,3,2,8,
+                3,6,9,4,9,3,1,5,6,9,
+                7,4,6,3,4,1,7,1,1,1,
+                1,3,1,9,1,2,8,1,3,7,
+                1,3,5,9,9,1,2,4,2,1,
+                3,1,2,5,4,2,1,6,3,9,
+                1,2,9,3,1,3,8,5,2,1,
+                2,3,1,1,9,4,4,5,8,1]
+    expected_r_l = 10
+    grid, row_len = parse_chiton_cave('./tests/data/day_15.txt')
+    assert expected_r_l == row_len
+    assert expected == grid

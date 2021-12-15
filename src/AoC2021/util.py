@@ -117,3 +117,16 @@ def parse_polymer_formula(file: str) -> Tuple[str, Dict, Dict]:
                         elements[i] = 0
 
     return (template, rules, elements)
+
+
+def parse_chiton_cave(file: str) -> Tuple[List[int], int]:
+    grid = []
+    row_len = 0
+
+    with open(file) as f:
+        for line in f:
+            if not row_len: row_len = len(line.strip())
+            row = [int(x) for x in line.strip()]
+            if row: grid.append(row)
+    
+    return (sum(grid, []), row_len)
