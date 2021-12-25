@@ -131,14 +131,27 @@ def parse_chiton_cave(file: str) -> Tuple[List[int], int]:
     
     return (sum(grid, []), row_len)
 
+def parse_image(file: str) -> tuple[str, dict[tuple[int,int],str]]:
+    algorithm = None
+    picture = {}
+    _x = 0
+    _y = 0
+
+    with open(file) as f:
+        for line in f:
+            _l = line.strip()
+            if not algorithm and _l:
+                algorithm = _l
+            elif _l:
+                _x = 0
+                for c in _l:
+                    picture[(_x,_y)] = c
+                    _x += 1
+                _y += 1
+
+    return (algorithm, picture)
+
 
 def sort_string(value: str) -> str:
     _l = sorted(value)
     return ''.join(_l)
-
-
-def replace_character_at_index(string: str, character: str, index: int) -> str:
-    
-
-
-    return string

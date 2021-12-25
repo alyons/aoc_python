@@ -1,4 +1,4 @@
-from AoC2021.util import parse_chiton_cave, parse_file, parse_int_count, parse_int_file, parse_bingo_file, parse_manual, parse_octopus_grid, parse_cave_graph, parse_polymer_formula
+from AoC2021.util import parse_chiton_cave, parse_file, parse_int_count, parse_int_file, parse_bingo_file, parse_manual, parse_octopus_grid, parse_cave_graph, parse_polymer_formula, parse_image
 from numpy import array_equal, exp
 
 
@@ -87,3 +87,36 @@ def test_parse_chiton_grid():
     grid, row_len = parse_chiton_cave('./tests/data/day_15.txt')
     assert expected_r_l == row_len
     assert expected == grid
+
+def test_parse_image():
+    expected_algo = '..#.#..#####.#.#.#.###.##.....###.##.#..###.####..#####..#....#..#..##..###..######.###...####..#..#####..##..#.#####...##.#.#..#.##..#.#......#.###.######.###.####...#.##.##..#..#..#####.....#.#....###..#.##......#.....#..#..#..##..#...##.######.####.####.#.#...#.......#..#.#.#...####.##.#......#..#...##.#.##..#...##.#.##..###.#......#.#.......#.#.#.####.###.##...#.....####.#..#..#.##.#....##..#.####....##...##..#...#......#.#.......#.......##..####..#...#.#.#...##..#.#..###..#####........#..####......#..#'
+    expected_image = {
+        (0,0): '#',
+        (0,1): '#',
+        (0,2): '#',
+        (0,3): '.',
+        (0,4): '.',
+        (1,0): '.',
+        (1,1): '.',
+        (1,2): '#',
+        (1,3): '.',
+        (1,4): '.',
+        (2,0): '.',
+        (2,1): '.',
+        (2,2): '.',
+        (2,3): '#',
+        (2,4): '#',
+        (3,0): '#',
+        (3,1): '.',
+        (3,2): '.',
+        (3,3): '.',
+        (3,4): '#',
+        (4,0): '.',
+        (4,1): '.',
+        (4,2): '#',
+        (4,3): '.',
+        (4,4): '#',
+    }
+    algo, image = parse_image('./tests/data/day_20.txt')
+    assert algo == expected_algo
+    assert image == expected_image
