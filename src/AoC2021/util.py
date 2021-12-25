@@ -130,3 +130,15 @@ def parse_chiton_cave(file: str) -> Tuple[List[int], int]:
             if row: grid.append(row)
     
     return (sum(grid, []), row_len)
+
+
+def sort_string(value: str) -> str:
+    _l = sorted(value)
+    return ''.join(_l)
+
+
+def replace_character_at_index(string: str, character: str, index: int) -> str:
+    
+
+
+    return string
