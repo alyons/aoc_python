@@ -64,7 +64,7 @@ def get_universes(pos_1: int, pos_2: int, print_debug: bool = False):
         else:
             success_factors_1[_k][_prod] += 1
 
-    if print_debug: print(f'Completed sucesses for pos: {pos_1}!')
+    if print_debug: print(f'Completed sucesses for pos: {pos_1}! {len(success_1)}')
     if print_debug: print(f'Create successes for pos: {pos_2}...')
     
     for success in success_2:
@@ -78,7 +78,7 @@ def get_universes(pos_1: int, pos_2: int, print_debug: bool = False):
         else:
             success_factors_2[_k][_prod] += 1
     
-    if print_debug: print(f'Completed sucesses for pos: {pos_2}!')
+    if print_debug: print(f'Completed sucesses for pos: {pos_2}! {len(success_2)}')
     if print_debug: print(f'Create failures for pos: {pos_1}...')
 
     for _s in success_factors_2:
