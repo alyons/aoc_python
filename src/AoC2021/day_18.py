@@ -1,241 +1,149 @@
-from math import ceil, floor
-from typing import List
+from math import floor, ceil
+import re
 
 
-class Pair:
-    def __init__(self, input: str):
-        # Defaults for sanity
-        self.left = 0
-        self.right = 0
-        self.parent = None
-        self.is_left = True
-        self.depth = 0
+def _is_digit(character: str) -> bool:
+    return character in '1234567890'
 
-        split_index = -1
-        bracket_count = 0
 
-        for i, c in enumerate(input):
-            if c == '[':
-                bracket_count += 1
-            elif c == ']':
-                bracket_count -= 1
+def _addition(a: str, b: str) -> str:
+    return f'[{a},{b}]'
 
-            if bracket_count == 1 and c == ',':
-                split_index = i
 
-        _left = input[1:split_index]
-        _right = input[split_index + 1:-1]
+def _explosion_index(sf_number: str) -> int:
+    depth = 0
 
-        if ',' in _left:
-            self.left = Pair(_left)
-            self.left.set_parent(self)
-            self.left._increment_depth()
+    for i, d in enumerate(sf_number):
+        depth += 1 if d == '[' else -1 if d == ']' else 0
+        if depth > 4: return i
+
+    return -1
+
+
+def _explode(sf_number: str, index: int) -> str:
+    # Get numbers
+    number_index = index + 1
+    first_str = ''
+    for i in range(number_index, len(sf_number)):
+        if _is_digit(sf_number[i]):
+            first_str += sf_number[i]
         else:
-            self.left = int(_left)
-
-        if ',' in _right:
-            self.right = Pair(_right)
-            self.right.is_left = False
-            self.right.set_parent(self)
-            self.right._increment_depth()
+            number_index = i + 1
+            break
+    
+    second_str = ''
+    for i in range(number_index, len(sf_number)):
+        if _is_digit(sf_number[i]):
+            second_str += sf_number[i]
         else:
-            self.right = int(_right)
-        
+            number_index = i + 1
+            break
     
-    def __str__(self):
-        return f'[{self.left},{self.right}]'
-    
-    
-    def __add__(self, other):
-        _pair = Pair('[0,0]')
-        self.set_parent(_pair)
-        self.is_left = True
-        self._increment_depth()
-        other.set_parent(_pair)
-        other.is_left = False
-        other._increment_depth()
-        _pair.left = self
-        _pair.right = other
-        _pair.reduce()
-        return _pair
-    
+    # Process Left Side
+    left = sf_number[:index]
+    left_number = int(first_str)
+    left_index = -1
+    for i in range(len(left) - 1, -1, -1):
+        if _is_digit(left[i]) and left_index < 0:
+            left_index = i
+        elif not _is_digit(left[i]) and left_index > -1:
+            other_number = left[i+1:left_index+1]
+            left_number += int(other_number)
+            left = left[:i+1] + str(left_number) + left[left_index+1:] 
+            break
 
-    def _increment_depth(self):
-        self.depth += 1
-        if isinstance(self.left, Pair): self.left._increment_depth()
-        if isinstance(self.right, Pair): self.right._increment_depth()
+    # Process Right Side
+    right = sf_number[number_index:]
+    right_number = int(second_str)
+    right_index = -1
+    for i in range(0, len(right)):
+        if _is_digit(right[i]) and right_index < 0:
+            right_index = i
+        elif not _is_digit(right[i]) and right_index > -1:
+            other_number = right[right_index: i]
+            right_number += int(other_number)
+            right = right[:right_index] + str(right_number) + right[i:] 
+            break
 
+    return f'{left}0{right}'
 
-    def set_parent(self, parent):
-        self.parent = parent
-    
+def _split_index(sf_number: str) -> int:
+    potential_index = -1
 
-    def _pass_left(self, value, from_left, caller_depth):
-        if caller_depth > self.depth:
-            # print(f'L: {self}, value:{value}')
-            if from_left:
-                if self.parent:
-                    self.parent._pass_left(value, self.is_left, self.depth)
+    for i, d in enumerate(sf_number):
+        if _is_digit(d):
+            if potential_index == -1:
+                potential_index = i
             else:
-                # print(f'From Left?: {from_left}')
-                if isinstance(self.left, Pair):
-                    self.left._pass_left(value, self.is_left, self.depth)
-                else: # Assume integer
-                    # print(f'should be int {self.left}')
-                    self.left += value
-                    # print(f'Post addition: {self.left}')
-        else: # Assume Parent Called
-            # print(f'L{self.depth}: A parent called me')
-            if isinstance(self.right, Pair):
-                self.right._pass_left(value, self.left, self.depth)
-            else: # Assume integer
-                self.right += value
-    
-
-    def _pass_right(self, value, from_right, caller_depth):
-        if caller_depth > self.depth:
-            # print(f'R{self.depth}: A child called me')
-            if from_right:
-                if self.parent:
-                    self.parent._pass_right(value, not self.is_left, self.depth)
-            else:
-                if isinstance(self.right, Pair):
-                    self.right._pass_right(value, not self.is_left, self.depth)
-                else: # Assume integer
-                    self.right += value
-        else: # Assume Parent Called
-            # print(f'R{self.depth}: A parent called me')
-            if isinstance(self.left, Pair):
-                self.left._pass_right(value, not self.left, caller_depth)
-            else: # Assume integer
-                self.left += value
-
-
-    def _explode(self, already_exploded=False):
-        if already_exploded: return ()
-
-        explosion = ()
-        if self.depth >= 4 and isinstance(self.left, int) and isinstance(self.right, int):
-            return (self.left, self.right, self.is_left, self.depth, False)
-        if isinstance(self.left, Pair):
-            explosion = self.left._explode(already_exploded)
-        if not explosion and isinstance(self.right, Pair):
-            explosion = self.right._explode(already_exploded)
-        if explosion:
-            l_value, r_value, from_left, caller_depth, handled = explosion
-            if not handled:
-                # print(self.data_output())
-                self._pass_left(l_value, from_left, caller_depth)
-                self._pass_right(r_value, not from_left, caller_depth)
-                if from_left:
-                    self.left = 0
-                else:
-                    self.right = 0
-
-                handled = True
-            
-            return (l_value, r_value, from_left, caller_depth, handled)
-
-        return explosion
-    
-
-    def _split(self, already_split=False):
-        if already_split: return()
-
-        split = False
-
-        if isinstance(self.left, Pair):
-            split = split or self.left._split()
-        elif self.left > 9: # Assumes integer
-            _l = int(floor(self.left / 2))
-            _r = int(ceil(self.left / 2))
-
-            _left = Pair(f'[{_l},{_r}]')
-            _left.depth = self.depth + 1
-            _left.parent = self
-            self.left = _left
-            split = True
-        
-        if isinstance(self.right, Pair):
-            split = split or self.right._split()
-        elif self.right > 9: # Assumes integer
-            _l = int(floor(self.right / 2))
-            _r = int(ceil(self.right / 2))
-
-            _right = Pair(f'[{_l},{_r}]')
-            _right.depth = self.depth + 1
-            _right.parent = self
-            _right.is_left = False
-            self.right = _right
-            split = True
-
-        return split
-    
-    
-    def reduce(self):
-        reduce_again = True
-
-        while reduce_again:
-            print(self)
-            did_explode = bool(self._explode())
-            if not did_explode: split = self._split()
-            # print(f'Explosion: {explosion} and Split: {split}')
-            reduce_again = did_explode or split
-    
-
-    def magnitue(self) -> int:
-        _l = 1
-        _r = 1
-
-        if isinstance(self.left, Pair):
-            _l = self.left.magnitue()
+                return potential_index
         else:
-            _l = self.left
-        
-        if isinstance(self.right, Pair):
-            _r = self.right.magnitue()
+            potential_index = -1
+
+    return -1
+
+
+def _split(sf_number: str, index: int) -> str:
+    end = index - 1
+    for i in range(index, len(sf_number)):
+        end += 1
+        if not _is_digit(sf_number[i]):
+            break
+    to_split = int(sf_number[index:end])
+    return f'{sf_number[:index]}[{int(floor(to_split / 2))},{int(ceil(to_split / 2))}]{sf_number[end:]}'
+
+
+def _reduce(sf_number: str) -> tuple[bool, str]:
+    did_reduce = False
+
+    e_i = _explosion_index(sf_number)
+    if e_i > -1:
+        sf_number = _explode(sf_number, e_i)
+        did_reduce = True
+    
+    if not did_reduce:
+        s_i = _split_index(sf_number)
+        if s_i > -1:
+            sf_number = _split(sf_number, s_i)
+            did_reduce = True
+
+    return (did_reduce, sf_number)
+
+
+def snailfish_addition(elements: list[str]) -> str:
+    value = None
+
+    for e in elements:
+        if not value:
+            value = e
         else:
-            _r = self.right
+            value = _addition(value, e)
+            did_reduce, value = _reduce(value)
+            while did_reduce:
+                did_reduce, value = _reduce(value)
 
-        return _l * 3 + _r * 2
-    
-    
-    def data_output(self) -> str:
-        return f'Depth: {self.depth}\nIs Left: {self.is_left}\nLeft: {self.left}\nRight: {self.right}'
-    
+    return value
 
-    def get_max_depth(self) -> int:
-        max_depth = self.depth
+def _magnitude_replace(match: re.Match):
+    left = int(match.group(1)) * 3
+    right = int(match.group(2)) * 2
+    return str(left + right)
 
-        if isinstance(self.left, Pair):
-            max_depth = max(max_depth, self.left.get_max_depth())
+
+def magnitude(sf_number: str) -> int:
+    while '[' in sf_number:
+        sf_number = re.sub(r'\[(\d+),(\d+)\]', _magnitude_replace, sf_number)
         
-        if isinstance(self.right, Pair):
-            max_depth = max(max_depth, self.right.get_max_depth())
-        
-        return max_depth
+    return int(sf_number)
 
 
-    def print_tree(self, lines: List[str] = []):
-        print_depth = self.get_max_depth()
-        print(print_depth)
+def find_largest_pair_magnitude(elements: list[str]) -> int:
+    mag = 0
 
-        while(print_depth + 3 > len(lines)):
-            lines.append('')
+    for i in range(len(elements) - 1):
+        for j in range(i + 1, len(elements)):
+            _m = magnitude(snailfish_addition([elements[i], elements[j]]))
+            if _m > mag: mag = _m
+            _m = magnitude(snailfish_addition([elements[j], elements[i]]))
+            if _m > mag: mag = _m
 
-
-
-def sum_pairs(pairs: List[Pair], print_steps: bool = False) -> Pair:
-    pair_sum = None
-    for p in pairs:
-        if not pair_sum:
-            pair_sum = p
-        else:
-            pair_sum += p
-        
-        if (print_steps):
-            print()
-            print(pair_sum)
-            print()
-
-    return pair_sum
+    return mag
