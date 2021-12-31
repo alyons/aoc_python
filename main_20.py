@@ -6,8 +6,8 @@ def main():
     
     algorithm, image = parse_image('./data/day_20.txt')
 
-    for _ in range(2):
-        enhance_image(algorithm, image)
+    for i in range(50):
+        enhance_image(algorithm, image, i % 2 == 1)
     
     pixels = sum(p == '#' for p in image.values())
 

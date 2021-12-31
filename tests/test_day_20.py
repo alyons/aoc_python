@@ -6,14 +6,14 @@ algorithm, image = parse_image('./tests/data/day_20.txt')
 def test_find_index():
     key = (2,2)
     expected = 34
-    actual = find_index(key, image)
+    actual = find_index(key, image, False)
     assert actual == expected
 
 
 def test_enhance_pixel():
     key = (2,2)
     expected = '#'
-    actual = enhance_pixel(key, image, algorithm)
+    actual = enhance_pixel(key, image, algorithm, False)
     assert actual == expected
 
 
