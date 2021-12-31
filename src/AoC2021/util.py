@@ -152,6 +152,30 @@ def parse_image(file: str) -> tuple[str, dict[tuple[int,int],str]]:
     return (algorithm, picture)
 
 
+def parse_sea_cucumbers(file: str) -> tuple[list[tuple[int, int]], list[tuple[int, int]], int, int]:
+    east: list[tuple[int, int]] = []
+    south:list[tuple[int, int]] = []
+    _x = 0
+    _y = 0
+    _x_max = -1
+    _y_max = -1
+
+    with open(file) as f:
+        for line in f:
+            _l = line.strip()
+            if _l:
+                for c in _l:
+                    if c == '>': east.append((_x, _y))
+                    if c == 'v': south.append((_x, _y))
+                    if _x > _x_max: _x_max = _x
+                    _x += 1
+                _x = 0
+                if _y > _y_max: _y_max = _y
+                _y += 1
+
+    return (east, south, _x_max, _y_max)
+
+
 def sort_string(value: str) -> str:
     _l = sorted(value)
     return ''.join(_l)

@@ -1,4 +1,4 @@
-from AoC2021.util import parse_chiton_cave, parse_file, parse_int_count, parse_int_file, parse_bingo_file, parse_manual, parse_octopus_grid, parse_cave_graph, parse_polymer_formula, parse_image
+from AoC2021.util import parse_chiton_cave, parse_file, parse_int_count, parse_int_file, parse_bingo_file, parse_manual, parse_octopus_grid, parse_cave_graph, parse_polymer_formula, parse_image, parse_sea_cucumbers
 from numpy import array_equal, exp
 
 
@@ -120,3 +120,15 @@ def test_parse_image():
     algo, image = parse_image('./tests/data/day_20.txt')
     assert algo == expected_algo
     assert image == expected_image
+
+
+def test_parse_sea_cucumbers():
+    e_east = [(4, 0), (5, 0), (9, 0), (3, 1), (4, 1), (0, 2), (1, 2), (3, 2), (5, 2), (0, 3), (1, 3), (3, 3), (4, 3), (6, 3), (1, 4), (0, 5), (2, 5), (3, 5), (5, 6), (7, 6), (5, 7), (6, 7), (9, 8)]
+    e_south = [(0, 0), (7, 0), (8, 0), (1, 1), (2, 1), (6, 1), (7, 1), (4, 2), (9, 2), (2, 3), (8, 3), (0, 4), (2, 4), (4, 4), (5, 4), (7, 4), (6, 5), (1, 6), (2, 6), (8, 6), (0, 7), (2, 7), (7, 7), (9, 7), (4, 8), (7, 8)]
+    e_x_max = 9
+    e_y_max = 8
+    east, south, x_max, y_max = parse_sea_cucumbers('./tests/data/day_25.txt')
+    assert east == e_east
+    assert south == e_south
+    assert x_max == e_x_max
+    assert y_max == e_y_max
