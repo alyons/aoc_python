@@ -1,6 +1,7 @@
-from typing import Dict, List, Set, Tuple
+from typing import Dict, Iterable, List, Set, Tuple
 from numpy import ndarray
 import re
+from time import clock_gettime_ns, CLOCK_REALTIME
 
 
 def parse_file(file: str) -> List[str]:
@@ -179,3 +180,20 @@ def parse_sea_cucumbers(file: str) -> tuple[list[tuple[int, int]], list[tuple[in
 def sort_string(value: str) -> str:
     _l = sorted(value)
     return ''.join(_l)
+
+
+def manhattan_distance(a: Iterable[int], b: Iterable[int]) -> int:
+    return sum([abs(x - y) for (x, y) in zip(a, b)])
+
+
+def generate_time_string(start_time: int, is_running: bool = True) -> str:
+    diff = clock_gettime_ns(CLOCK_REALTIME) - start_time
+    remainder = int(diff % 1e9)
+    total_seconds = diff // 1e9
+    minutes = int(total_seconds // 60)
+    seconds = int(total_seconds % 60)
+
+    if is_running:
+        return f'Time Running: {minutes:02}:{seconds:02}.{remainder}'
+    else:
+        return f'Ran in: {minutes:02}:{seconds:02}.{remainder}'

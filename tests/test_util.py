@@ -1,4 +1,4 @@
-from AoC2021.util import parse_chiton_cave, parse_file, parse_int_count, parse_int_file, parse_bingo_file, parse_manual, parse_octopus_grid, parse_cave_graph, parse_polymer_formula, parse_image, parse_sea_cucumbers
+from AoC2021.util import parse_chiton_cave, parse_file, parse_int_count, parse_int_file, parse_bingo_file, parse_manual, parse_octopus_grid, parse_cave_graph, parse_polymer_formula, parse_image, parse_sea_cucumbers, manhattan_distance
 from numpy import array_equal, exp
 
 
@@ -132,3 +132,8 @@ def test_parse_sea_cucumbers():
     assert south == e_south
     assert x_max == e_x_max
     assert y_max == e_y_max
+
+
+def test_manhattan_distance():
+    actual = manhattan_distance((1105,-1205,1229), (-92,-2380,-20))
+    assert actual == 3621
