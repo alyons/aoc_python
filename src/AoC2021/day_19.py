@@ -1,5 +1,16 @@
 from copy import deepcopy
-from tqdm import tqdm
+
+from AoCUtils.utils import manhattan_distance
+from AoCUtils.rich import Header, make_default_layout, make_job_progress, make_progress_table
+
+from rich.console import Console
+from rich.live import Live
+from rich.panel import Panel
+from rich.table import Table
+
+Beacon_Set = set[tuple[int, int, int]]
+
+console = Console()
 
 ###################################################
 #                   Rotation Table                #
@@ -87,11 +98,11 @@ class Scanner:
 
 
     # Create Beacon set
-    def create_beacon_set(self: 'Scanner', adjustment: list[int]) -> set[tuple[int, int, int]]:
+    def create_beacon_set(self: 'Scanner', adjustment: list[int]) -> Beacon_Set:
         return {(b[0] - adjustment[0], b[1] - adjustment[1], b[2] - adjustment[2]) for b in self.beacons}
 
     
-    def get_absolute_beacon_set(self: 'Scanner') -> set[tuple[int, int, int]]:
+    def get_absolute_beacon_set(self: 'Scanner') -> Beacon_Set:
         _beacons = set()
 
         for b in self.beacons:
@@ -142,6 +153,7 @@ class Scanner:
         
         # Process and set Scanner B appropriately
         if found:
+            # layout['data_vis'].update(make_data_vis(rel_beacons_a, rel_beacons_b, shared))
             # Set Rotations and reference rotations
             scanner_b.reference_rotations = deepcopy(scanner_a.reference_rotations)
             if scanner_a.rotation != [0, 0, 0]: scanner_b.reference_rotations.append(deepcopy(scanner_a.rotation))
@@ -180,44 +192,74 @@ def parse_scanners(file: str) -> list[Scanner]:
     return scanners
 
 
-def build_beacon_map(scanners: list[Scanner]) -> set[tuple[int, int, int]]:
-    scanner_range = range(len(scanners))
-    position_dict: dict[int, int] = {}
-    
-    progress = tqdm(len(scanners))
+def make_beacon_table(title: str, beacons: Beacon_Set, shared: Beacon_Set) -> Table:
+    table = Table(
+        'X',
+        'Y',
+        'Z',
+        title=title
+    )
 
-    while any(not s.locked for s in scanners):
-        for i in scanner_range:
-            for j in scanner_range:
-                if i == j:
-                    # print('Cannot overlap a scanner with itself...')
-                    continue
-                elif scanners[i].locked ^ scanners[j].locked:
-                    if scanners[i].locked:
-                        if scanners[i].overlap(scanners[j], False):
-                            progress.update(1)
-                            position_dict[j] = i
-                    else:
-                        if scanners[j].locked:
-                            if scanners[j].overlap(scanners[i], False):
-                                progress.update(1)
-                                position_dict[i] = j
-                else:
-                    # print('Both scanners are in the same state, so can not compare...')
-                    continue  
-    progress.close()
+    for beacon in beacons:
+        table.add_row(f'{beacon[0]:6}', f'{beacon[1]:6}', f'{beacon[2]:6}', style='green' if beacon in shared else None)
+    
+    return table
+
+
+def make_data_vis(a: Beacon_Set, b: Beacon_Set, shared: Beacon_Set) -> Panel:
+    scanner_a_table = make_beacon_table('Scanner A', a, shared)
+    scanner_b_table = make_beacon_table('Scanner B', b, shared)
+
+    grid = Table.grid(expand=True)
+    grid.add_column()
+    grid.add_column()
+    grid.add_row(
+        scanner_a_table,
+        scanner_b_table
+    )
+
+    return Panel(
+        grid,
+        title='Scanner Comparison',
+        border_style='Red'
+    )
+
+
+layout = make_default_layout()
+layout['header'].update(Header('Scanner Alignment', 2021, 19))
+
+
+def build_beacon_map(scanners: list[Scanner]) -> Beacon_Set:
+    job_progress = make_job_progress()
+    alignment_task_id = job_progress.add_task('[bold]Align Scanners', total=len(scanners))
+    job_progress.advance(alignment_task_id) # The first scanner is locked as it is the basis of the algorithm
+    layout['footer'].update(make_progress_table(job_progress))
+    scanner_table = Table(
+        'Position', 'Rotation', 'Reference Rotations', title='Completed Scanners'
+    )
+    scanner_table.add_row(str(scanners[0].position), str(scanners[0].rotation), str(scanners[0].reference_rotations))
+    layout['data_vis'].update(Panel(scanner_table, style='Yellow'))
+
+    aligned = [0]
+    unaligned = [i for i in range(1, len(scanners))]
+
+    with Live(layout, screen=True):
+        while unaligned:
+            a_id = aligned.pop()
+            for u_id in unaligned:
+                if scanners[a_id].overlap(scanners[u_id]):
+                    aligned.append(u_id)
+                    job_progress.advance(alignment_task_id)
+                    scanner_table.add_row(str(scanners[u_id].position), str(scanners[u_id].rotation), str(scanners[u_id].reference_rotations))
+        
+            for a in aligned:
+                if a in unaligned: unaligned.remove(a)
+
+    console.print(layout)
 
     beacons = set()
     for s in scanners: beacons |= s.get_absolute_beacon_set()
     return beacons
-
-
-def manhattan_distance(a: list[int], b: list[int]):
-    distance = 0
-    for i in range(0, 3):
-        distance += abs(a[i] - b[i])
-    
-    return distance
 
 
 def largest_distance_between_scanners(scanners: list[Scanner]) -> int:

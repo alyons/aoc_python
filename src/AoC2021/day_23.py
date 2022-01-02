@@ -1,9 +1,10 @@
-from rich.style import Style
-from AoC2021.util import generate_time_string, manhattan_distance
 import re
 from sys import maxsize
 from copy import deepcopy
 from time import clock_gettime_ns, CLOCK_REALTIME, sleep
+
+from AoCUtils.utils import generate_time_string, manhattan_distance
+from AoCUtils.rich import make_default_header, make_default_layout
 
 from rich import box
 from rich.align import Align
@@ -12,6 +13,7 @@ from rich.layout import Layout
 from rich.live import Live
 from rich.panel import Panel
 from rich.progress import Progress, SpinnerColumn, BarColumn, TextColumn
+from rich.style import Style
 from rich.syntax import Syntax
 from rich.table import Column, Table
 from rich.text import Text
@@ -20,20 +22,7 @@ Amphipod = tuple[int, int, str]
 Move = tuple[int, int, int]
 
 console = Console()
-layout = Layout()
-
-layout.split(
-    Layout(name='header', size=3),
-    Layout(ratio=1, name='main'),
-    Layout(size=3, name='footer')
-)
-
-layout['main'].split_row(
-    Layout(name='map'),
-    Layout(name='debug')
-)
-
-layout['debug']
+layout = make_default_layout()
 
 # A Quick way to check if a map is finished
 _FINISHED_MAP = {
@@ -241,7 +230,7 @@ def amphipod_a_star(start: str, test_items: list[str] = []) -> list[Move]:
     start_time = clock_gettime_ns(CLOCK_REALTIME)
     iterations = 0
 
-    layout['header'].update(Panel('Amphipods', title='Advent of Code 2021', subtitle='23'))
+    layout['header'].update(make_default_header('Amphipod Sorting', 2021, 23))
     layout['footer'].update(Panel(generate_time_string(start_time), border_style='green'))
 
     with Live(layout, refresh_per_second=10, screen=True):
@@ -294,7 +283,7 @@ def amphipod_a_star(start: str, test_items: list[str] = []) -> list[Move]:
             
             debug_data.extend([(f'Current Data: {i}', a) for i, a in enumerate(current_to_renderable(current, large_rooms))])
 
-            layout['map'].update(render_map_panel(amphipods))
+            layout['data_vis'].update(render_map_panel(amphipods))
             layout['debug'].update(render_debug(debug_data))
             layout['footer'].update(Panel(generate_time_string(start_time), border_style='green'))
     
@@ -332,7 +321,7 @@ def total_energy_used(amphipods: list[Amphipod], moves: list[Move], sleep_increm
             energy += move_amphipod(amphipods, m)
             table.add_row(str(m), str(energy))
             amphipods.sort(key =lambda p: (p[2], p[0], p[1]))
-            layout['map'].update(render_map_panel(amphipods))
+            layout['data_vis'].update(render_map_panel(amphipods))
             layout['footer'].update(Panel(f'Move: {m}', border_style='green'))
             layout['debug'].update(Panel(
                 Align.center(table, vertical='middle'),

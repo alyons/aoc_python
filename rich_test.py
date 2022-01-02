@@ -23,9 +23,9 @@ def make_layout() -> Layout:
     layout = Layout(name="root")
 
     layout.split(
-        Layout(name="header", size=3),
+        Layout(name="header", minimum_size=3),
         Layout(name="main", ratio=1),
-        Layout(name="footer", size=7),
+        Layout(name="footer", minimum_size=7),
     )
     layout["main"].split_row(
         Layout(name="side"),

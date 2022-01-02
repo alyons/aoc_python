@@ -19,14 +19,14 @@ install python3.20-venv
 - [X] Make it so I am doing an import of the package rather than directly calling files
 - [X] Complete all 50 stars
 - [ ] Clean Up Code
-  - [ ] Create a generic AdventOfCodeUtils package (parse_file, manhattan_distance, a_star, etc.)
+  - [X] Create a generic AdventOfCodeUtils package (parse_file, manhattan_distance, a_star, etc.)
   - [ ] Move specific parse functions to their respective days
   - [ ] Make a* completely generic
 - [ ] Add Test Coverage
   - [ ] Get as close to 100% as possible
   - [ ] Move logic to 'main' where appropriate
 - [ ] Create default rich layout
-  - [ ] Add to AdventOfCodeUtils
+  - [X] Add to AdventOfCodeUtils
   - [ ] Work on full screen Layouts
     - [ ] Header
     - [ ] Footer
