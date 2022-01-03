@@ -4,7 +4,7 @@ from copy import deepcopy
 from time import clock_gettime_ns, CLOCK_REALTIME, sleep
 
 from AoCUtils.utils import generate_time_string, manhattan_distance
-from AoCUtils.rich import make_default_header, make_default_layout
+from AoCUtils.rich import Header, make_default_layout
 
 from rich import box
 from rich.align import Align
@@ -230,7 +230,7 @@ def amphipod_a_star(start: str, test_items: list[str] = []) -> list[Move]:
     start_time = clock_gettime_ns(CLOCK_REALTIME)
     iterations = 0
 
-    layout['header'].update(make_default_header('Amphipod Sorting', 2021, 23))
+    layout['header'].update(Header('Amphipod Sorting', 2021, 23))
     layout['footer'].update(Panel(generate_time_string(start_time), border_style='green'))
 
     with Live(layout, refresh_per_second=10, screen=True):
