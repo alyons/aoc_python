@@ -27,7 +27,7 @@ def hex_to_binary_str(hex: str) -> str:
     return ''.join(chunks)
 
 
-def parse_literal_value(binary: str, index: int) -> int:
+def parse_literal_value(binary: str, index: int) -> tuple[int, int]:
     _literal = ''
     _l = '1'
     while _l[0] == '1':

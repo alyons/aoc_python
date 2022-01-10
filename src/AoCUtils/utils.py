@@ -27,3 +27,8 @@ def generate_time_string(start_time: int, is_running: bool = True) -> str:
         return f'Time Running: {minutes:02}:{seconds:02}.{remainder}'
     else:
         return f'Ran in: {minutes:02}:{seconds:02}.{remainder}'
+
+
+def sort_string(value: str) -> str:
+    _l = sorted(value)
+    return ''.join(_l)

@@ -75,3 +75,28 @@ def make_progress_table(job_progress: Progress) -> Table:
     )
 
     return progress_table
+
+
+def make_variable_table(data: list[tuple] = []) -> Table:
+    table = Table(
+        Column(header='Name', style='green'),
+        Column(header='Value', justify='right'),
+        expand=True
+    )
+
+    for item in data:
+        table.add_row(
+            item[0],
+            item[1]
+        )
+    
+    return table
+
+def make_variable_panel(table: Table) -> Panel:
+    return Panel(
+        Align.center(table, vertical='middle'),
+        box = box.ROUNDED,
+        padding=(1,2),
+        title="Variables",
+        border_style='bright_blue'
+    )
